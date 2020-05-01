@@ -21,7 +21,7 @@ var wildmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?
   accessToken: API
 });
 
-var map = L.map("mapid", {
+var map = L.map("new-id", {
   center: [
     40.7, -94.5
   ],
@@ -46,7 +46,7 @@ var baseMaps = {
 
 var overlays = {
   "Tectonic Plates": plates,
-  quakes: earthquakes
+  quakes: quakes
 };
 
 
@@ -88,8 +88,6 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
     }
   }
 
-  // This function determines the radius of the earthquake marker based on its magnitude.
-  // Earthquakes with a magnitude of 0 were being plotted with the wrong radius.
   function getRadius(magnitude) {
     if (magnitude === 0) {
       return 1;
@@ -98,31 +96,22 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
     return magnitude * 4;
   }
 
-  // Here we add a GeoJSON layer to the map once the file is loaded.
   L.geoJson(data, {
-    // We turn each feature into a circleMarker on the map.
     pointToLayer: function(feature, latlng) {
       return L.circleMarker(latlng);
     },
-    // We set the style for each circleMarker using our styleInfo function.
     style: styleInfo,
-    // We create a popup for each marker to display the magnitude and location of
-    // the earthquake after the marker has been created and styled
     onEachFeature: function(feature, layer) {
       layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
     }
-    // We add the data to the earthquake layer instead of directly to the map.
-  }).addTo(earthquakes);
+  }).addTo(quakes);
 
-  // Then we add the earthquake layer to our map.
-  earthquakes.addTo(map);
+  quakes.addTo(map);
 
-  // Here we create a legend control object.
   var legend = L.control({
     position: "bottomright"
   });
 
-  // Then we add all the details for our legend
   legend.onAdd = function() {
     var div = L
       .DomUtil
@@ -138,7 +127,6 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
       "#ea2c2c"
     ];
 
-    // Loop through our intervals and generate a label with a colored square for each interval.
     for (var i = 0; i < grades.length; i++) {
       div.innerHTML += "<i style='background: " + colors[i] + "'></i> " +
         grades[i] + (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+");
@@ -158,9 +146,9 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
         color: "orange",
         weight: 2
       })
-      .addTo(tectonicplates);
+      .addTo(plates);
 
       // Then add the tectonicplates layer to the map.
-      tectonicplates.addTo(map);
+      plates.addTo(map);
     });
 });
