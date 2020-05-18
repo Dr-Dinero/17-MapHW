@@ -57,7 +57,7 @@ function createMap(geolayer) {
         accessToken: API
     });
 
-    var baseMaps = {
+    var Maps = {
         "STREET MAP": streetmap,
         "DARK MAP": darkmap,
         "WILD MAP": wildside,
@@ -67,7 +67,7 @@ function createMap(geolayer) {
 
 
     var overlayMaps = {
-        Earthquakes: geolayer,
+        New_layer: geolayer,
 
     };
 
@@ -79,7 +79,7 @@ function createMap(geolayer) {
         layers: [streetmap, geolayer]
     });
 
-    L.control.layers(baseMaps, overlayMaps, {
+    L.control.layers(Maps, overlayMaps, {
         collapsed: false
     }).addTo(myMap);
 }
